@@ -45,7 +45,7 @@ PCRE_VERSION='8.36'
 # The name of the SSL/TLS library nginx should be compiled against.
 #
 # Possible values: openssl (default), boringssl. libressl
-TLS_LIBRARY_NAME='openssl'
+TLS_LIBRARY_NAME='foo'
 
 # The version string of the SSL/TLS library release that should be installed.
 TLS_LIBRARY_VERSION='1.0.1i'

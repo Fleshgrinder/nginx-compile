@@ -74,7 +74,22 @@ download_and_extract()
   tar fvxz ${ARCHIVE_NAME}
   rm -f ${ARCHIVE_NAME}
   ln -s ${2}-${3} ${2}
+  chown root:root ${SOURCE_DIRECTORY}/${2}
   chown -R root:root ${SOURCE_DIRECTORY}/${2}
+}
+
+# Create directory and set nginx owner.
+#
+# ARGS:
+#   $1 - Absolute path to the directory.
+create_directory()
+{
+  if [ ! -d ${1} ]
+  then
+    mkdir -p ${1}
+    chmod 0770 ${1}
+    chown ${USER}:${GROUP} ${1}
+  fi
 }
 
 # Check return status of every command.
@@ -85,31 +100,44 @@ echo "Installing nginx ${NGINX_VERSION} ..."
 # Make sure we operate from the correct directory.
 cd ${SOURCE_DIRECTORY}
 
-# Download SysVinit compliant script for nginx.
-if [ ! -f '/etc/init.d/nginx' ]
-then
-  git clone https://github.com/Fleshgrinder/nginx-sysvinit-script.git
-  cp nginx-sysvinit-script/nginx /etc/init.d/nginx
-  chmod 0755 /etc/init.d/nginx
-  chown root:root /etc/init.d/nginx
-fi
-
 # Download necessary sources.
-download_and_extract "http://nginx.org/download/" "nginx" ${NGINX_VERSION}
-download_and_extract "http://www.openssl.org/source/" "openssl" ${TLS_LIBRARY_VERSION}
-download_and_extract "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/" "pcre" ${PCRE_VERSION}
+download_and_extract 'http://nginx.org/download/' 'nginx' ${NGINX_VERSION}
+download_and_extract 'ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/' 'pcre' ${PCRE_VERSION}
+
+if [ ${TLS_LIBRARY_NAME} = 'openssl' ]
+then
+  download_and_extract 'http://www.openssl.org/source/' 'openssl' ${TLS_LIBRARY_VERSION}
+elif [ ${TLS_LIBRARY_NAME} = 'boringssl' ]
+then
+  if [ -d 'boringssl' ]
+  then
+    cd boringssl
+    git pull
+    cd ..
+  else
+    git clone https://boringssl.googlesource.com/boringssl
+  fi
+elif [ ${TLS_LIBRARY_NAME} = 'libressl' ]
+then
+  echo 'TODO: libressl'
+  exit 1
+else
+  echo "[$(tput bold; tput setaf 1)fail$(tput sgr0)] Unsupported TLS library '${TLS_LIBRARY_NAME}' specified, check your configuration."
+  exit 1
+fi
 
 # Ensure zlib is up to date.
 if [ -d "zlib" ]
 then
   cd zlib
   git pull
+  cd ..
 else
   git clone "https://github.com/madler/zlib.git"
 fi
 
-# Configure, compile, install and start nginx.
-cd nginx
+# Configure, compile, and install nginx.
+cd ${SOURCE_DIRECTORY}/nginx
 CFLAGS='-O3 -m64 -march=native -ffunction-sections -fdata-sections -D FD_SETSIZE=131072' \
 CXXFLAGS=${CFLAGS} \
 CPPFLAGS=${CFLAGS} \
@@ -158,10 +186,24 @@ LDFLAGS='-Wl,--gc-sections' \
 make
 make install
 make clean
+
+# Create the directories for temporary data.
+create_directory /var/nginx/uploads
+create_directory /var/nginx/fastcgi
+
+if [ ! -f /etc/init.d/nginx ]
+then
+  # Download SysVinit compliant script and ensure correct permissions and owner.
+  wget -O /etc/init.d/nginx https://raw.githubusercontent.com/Fleshgrinder/nginx-sysvinit-script/master/nginx
+  chmod 0775 /etc/init.d/nginx
+  chown root:root /etc/init.d/nginx
+
+  # Ensure nginx is started upon system startup.
+  update-rc.d nginx defaults 2>&-
+fi
+
+# Stop any running nginx process.
 set -e
 service nginx stop 2>&-
 set +e
-mkdir -p /var/nginx/uploads /var/nginx/fastcgi
-chmod -R 0770 /var/nginx
-chown -R ${USER}:${GROUP} /var/nginx
 service nginx start
