@@ -36,6 +36,38 @@
 # LINK: http://richard.fussenegger.info/
 # -----------------------------------------------------------------------------
 
+# Print usage text.
+#
+# RETURN:
+#  0 - Printing successful.
+#  1 - Printing failed.
+usage()
+{
+  cat << EOT
+Usage: ${0##*/} [OPTION]... [TLS_LIBRARY_NAME]
+Compile and install nginx from source.
+
+  -h  Display this help and exit.
+
+Report bugs to richard@fussenegger.info
+GitHub repository: https://github.com/Fleshgrinder/nginx-compile
+For complete documentation, see: README.md
+EOT
+}
+
+# Check for possibly passed options.
+while getopts 'h' OPT
+do
+  case "${OPT}" in
+    h) usage && exit 0 ;;
+    *) usage 2>&1 && exit 1 ;;
+  esac
+
+  # We have to remove found options from the input for later evaluations of
+  # passed arguments in subscripts that are not interested in these options.
+  shift $(( $OPTIND - 1 ))
+done
+
 # For more information on shell colors and other text formatting see:
 # http://stackoverflow.com/a/4332530/1251219
 readonly RED=$(tput bold; tput setaf 1)

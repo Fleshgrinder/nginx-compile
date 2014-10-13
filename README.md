@@ -9,7 +9,7 @@ Check the `config.sh` file for configuration options.
 
 ```
 git clone https://github.com/Fleshgrinder/nginx-compile.git
-sh nginx-compile/compile.sh openssl
+sh nginx-compile/compile.sh
 ```
 
 You may want to change the configure options for nginx in `compile.sh` to meet
