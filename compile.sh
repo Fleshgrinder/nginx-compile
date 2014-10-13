@@ -36,8 +36,15 @@
 # LINK: http://richard.fussenegger.info/
 # -----------------------------------------------------------------------------
 
+# For more information on shell colors and other text formatting see:
+# http://stackoverflow.com/a/4332530/1251219
+readonly RED=$(tput bold; tput setaf 1)
+readonly GREEN=$(tput bold; tput setaf 2)
+readonly YELLOW=$(tput bold; tput setaf 3)
+readonly NORMAL=$(tput sgr0)
+
 # Include user configurable configuration.
-. ./config.sh
+. "$(cd -- $(dirname -- ${0}); pwd)/config.sh"
 
 # Download and extract given compressed tar archive.
 #
@@ -48,34 +55,28 @@
 download_and_extract()
 {
   # Use existing source files if version matches.
-  if [ -d ${2}-${3} ]
+  if [ -d "${2}-${3}" ]
   then
-    return
+    return 0
   fi
 
   # We don't know which version these files have, delete and retrieve again.
-  if [ -d ${2} ]
-  then
-    rm -rf ${2}
-  fi
+  rm -rf -- "${2}"
 
   # Build archive name.
   local ARCHIVE_NAME="${2}-${3}.tar.gz"
 
   # Delete possibly left over archive.
-  if [ -f ${ARCHIVE_NAME} ]
-  then
-    rm -f ${ARCHIVE_NAME}
-  fi
+  rm -f -- "${ARCHIVE_NAME}"
 
   # Download, extract, delete archive, simplify directory name by creating
   # a symbolic link and make sure files belong to root user.
-  wget ${1}${ARCHIVE_NAME}
-  tar fvxz ${ARCHIVE_NAME}
-  rm -f ${ARCHIVE_NAME}
-  ln -s ${2}-${3} ${2}
-  chown root:root ${SOURCE_DIRECTORY}/${2}
-  chown -R root:root ${SOURCE_DIRECTORY}/${2}
+  wget "${1}${ARCHIVE_NAME}"
+  tar fvxz "${ARCHIVE_NAME}"
+  rm -f -- "${ARCHIVE_NAME}"
+  ln -s -- "${2}-${3}" "${2}"
+  chown -- root:root "${SOURCE_DIRECTORY}/${2}"
+  chown -R -- root:root "${SOURCE_DIRECTORY}/${2}"
 }
 
 # Create directory and set nginx owner.
@@ -84,67 +85,72 @@ download_and_extract()
 #   $1 - Absolute path to the directory.
 create_directory()
 {
-  if [ ! -d ${1} ]
-  then
-    mkdir -p ${1}
-    chmod 0770 ${1}
-    chown ${USER}:${GROUP} ${1}
-  fi
+  mkdir -p -- "${1}"
+  chmod -- 0755 "${1}"
+  chown -- "${USER}":"${GROUP}" "${1}"
 }
 
 # Check return status of every command.
 set -e
 
-echo "Installing nginx ${NGINX_VERSION} ..."
+printf 'Installing nginx %s ...\n' "${YELLOW}${NGINX_VERSION}${NORMAL}"
 
 # Make sure we operate from the correct directory.
-cd ${SOURCE_DIRECTORY}
+cd -- "${SOURCE_DIRECTORY}"
 
 # Download necessary sources.
-download_and_extract 'http://nginx.org/download/' 'nginx' ${NGINX_VERSION}
-download_and_extract 'ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/' 'pcre' ${PCRE_VERSION}
+download_and_extract 'http://nginx.org/download/' 'nginx' "${NGINX_VERSION}"
+download_and_extract 'ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/' 'pcre' "${PCRE_VERSION}"
 
-if [ ${TLS_LIBRARY_NAME} = 'openssl' ]
-then
-  download_and_extract 'http://www.openssl.org/source/' 'openssl' ${TLS_LIBRARY_VERSION}
-elif [ ${TLS_LIBRARY_NAME} = 'boringssl' ]
-then
-  if [ -d 'boringssl' ]
-  then
-    cd boringssl
-    git pull
-    cd ..
-  else
-    git clone https://boringssl.googlesource.com/boringssl
-  fi
-elif [ ${TLS_LIBRARY_NAME} = 'libressl' ]
-then
-  echo 'TODO: libressl'
-  exit 1
-else
-  echo "[$(tput bold; tput setaf 1)fail$(tput sgr0)] Unsupported TLS library '${TLS_LIBRARY_NAME}' specified, check your configuration."
-  exit 1
-fi
+case "${TLS_LIBRARY_NAME}" in
+  openssl)
+    download_and_extract 'http://www.openssl.org/source/' 'openssl' "${TLS_LIBRARY_VERSION}"
+  ;;
+
+  boringssl)
+    if [ -d 'boringssl' ]
+    then
+      cd -- boringssl
+      git pull
+      cd -- ..
+    else
+      git clone 'https://boringssl.googlesource.com/boringssl'
+    fi
+    printf '%sTODO:%s boringssl' "${YELLOW}" "${NORMAL}" >&2
+    exit 1
+  ;;
+
+  libressl)
+    printf '%sTODO:%s libressl' "${YELLOW}" "${NORMAL}" >&2
+    exit 1
+  ;;
+
+  *)
+    printf '[%sfail%s] Unsupported TLS library `%s` specified, check your configuration.\n' \
+      "${RED}" "${NORMAL}" "${TLS_LIBRARY_NAME}" >&2
+    exit 1
+  ;;
+esac
 
 # Ensure zlib is up to date.
-if [ -d "zlib" ]
+if [ -d zlib ]
 then
-  cd zlib
+  cd -- zlib
   git pull
-  cd ..
+  cd -- ..
 else
-  git clone "https://github.com/madler/zlib.git"
+  git clone 'https://github.com/madler/zlib.git'
 fi
 
 # Configure, compile, and install nginx.
-cd ${SOURCE_DIRECTORY}/nginx
+cd -- "${SOURCE_DIRECTORY}/nginx"
 CFLAGS='-O3 -m64 -march=native -ffunction-sections -fdata-sections -D FD_SETSIZE=131072' \
-CXXFLAGS=${CFLAGS} \
-CPPFLAGS=${CFLAGS} \
+CXXFLAGS="${CFLAGS}" \
+CPPFLAGS="${CFLAGS}" \
 LDFLAGS='-Wl,--gc-sections' \
 ./configure \
-  --user=${USER} \
-  --group=${GROUP} \
+  --user="${USER}" \
+  --group="${GROUP}" \
   --prefix='/usr/local' \
   --sbin-path='/usr/local/sbin' \
   --conf-path='/etc/nginx/nginx.conf' \
@@ -154,8 +160,9 @@ LDFLAGS='-Wl,--gc-sections' \
   --http-client-body-temp-path='/var/nginx/uploads' \
   --http-fastcgi-temp-path='/var/nginx/fastcgi' \
   --http-log-path='/var/log/nginx/access.log' \
-  --with-cc-opt=${CFLAGS} \
-  --with-ld-opt=${LDFLAGS} \
+  --with-cc-opt="${CFLAGS}" \
+  --with-ld-opt="${LDFLAGS}" \
+  --with-debug \
   --with-ipv6 \
   --with-http_gzip_static_module \
   --with-http_ssl_module \
@@ -184,7 +191,11 @@ LDFLAGS='-Wl,--gc-sections' \
   --without-http_userid_module \
   --without-http_uwsgi_module
 make
+set -e
+service nginx stop 2>/dev/null
+set +e
 make install
+service nginx start
 make clean
 
 # Create the directories for temporary data.
@@ -194,16 +205,13 @@ create_directory /var/nginx/fastcgi
 if [ ! -f /etc/init.d/nginx ]
 then
   # Download SysVinit compliant script and ensure correct permissions and owner.
-  wget -O /etc/init.d/nginx https://raw.githubusercontent.com/Fleshgrinder/nginx-sysvinit-script/master/nginx
-  chmod 0775 /etc/init.d/nginx
-  chown root:root /etc/init.d/nginx
+  wget -O /etc/init.d/nginx 'https://raw.githubusercontent.com/Fleshgrinder/nginx-sysvinit-script/master/nginx'
+  chmod -- 0775 /etc/init.d/nginx
+  chown -- root:root /etc/init.d/nginx
 
   # Ensure nginx is started upon system startup.
-  update-rc.d nginx defaults 2>&-
+  update-rc.d nginx defaults
 fi
 
-# Stop any running nginx process.
-set -e
-service nginx stop 2>&-
-set +e
-service nginx start
+printf '[%sok%s] Installation finished.\n' "${GREEN}" "${NORMAL}"
+exit 0

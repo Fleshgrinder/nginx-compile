@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # This is free and unencumbered software released into the public domain.
 #
 # Anyone is free to copy, modify, publish, use, compile, sell, or
@@ -25,36 +25,36 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # For more information, please refer to <http://unlicense.org>
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Configuration file for nginx compile scripts.
 #
 # AUTHOR: Richard Fussenegger <richard@fussenegger.info>
 # COPYRIGHT: Copyright (c) 2013 Richard Fussenegger
 # LICENSE: http://unlicense.org/ PD
 # LINK: http://richard.fussenegger.info/
-# -----------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # The version string of the nginx release that should be installed.
-NGINX_VERSION='1.7.6'
+readonly NGINX_VERSION='1.7.6'
 
 # The version string of the PCRE release that should be installed.
-PCRE_VERSION='8.36'
+readonly PCRE_VERSION='8.36'
 
 # The name of the SSL/TLS library nginx should be compiled against.
 #
 # Possible values: openssl (default), boringssl. libressl
-TLS_LIBRARY_NAME='foo'
+readonly TLS_LIBRARY_NAME='openssl'
 
 # The version string of the SSL/TLS library release that should be installed.
-TLS_LIBRARY_VERSION='1.0.1i'
+readonly TLS_LIBRARY_VERSION='1.0.1i'
 
 # The name of the user nginx should use.
-USER='www-data'
+readonly USER='www-data'
 
 # The name of the group nginx should use.
-GROUP='www-data'
+readonly GROUP='www-data'
 
 # The absolute path to the downloaded and extracted source files.
-SOURCE_DIRECTORY='/usr/local/src'
+readonly SOURCE_DIRECTORY='/usr/local/src'
