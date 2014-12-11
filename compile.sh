@@ -111,7 +111,7 @@ download_and_extract()
   wget "${1}${ARCHIVE_NAME}"
   tar --extract --file="${ARCHIVE_NAME}"
   rm --force -- "${ARCHIVE_NAME}"
-  ln --symoblic -- "${2}-${3}" "${2}"
+  ln --symbolic -- "${2}-${3}" "${2}"
   chown -- root:root "${SOURCE_DIRECTORY}/${2}"
   chown --recursive -- root:root "${SOURCE_DIRECTORY}/${2}"
 }
