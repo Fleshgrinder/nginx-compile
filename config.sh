@@ -37,7 +37,7 @@
 # ------------------------------------------------------------------------------
 
 # The version string of the nginx release that should be installed.
-readonly NGINX_VERSION='1.7.6'
+readonly NGINX_VERSION='1.7.8'
 
 # The version string of the PCRE release that should be installed.
 readonly PCRE_VERSION='8.36'
@@ -48,7 +48,7 @@ readonly PCRE_VERSION='8.36'
 readonly TLS_LIBRARY_NAME="${1:=openssl}"
 
 # The version string of the SSL/TLS library release that should be installed.
-readonly TLS_LIBRARY_VERSION='1.0.1i'
+readonly TLS_LIBRARY_VERSION='1.0.1j'
 
 # The name of the user nginx should use.
 readonly USER='www-data'
