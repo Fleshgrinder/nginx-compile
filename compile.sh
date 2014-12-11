@@ -59,14 +59,19 @@ EOT
 while getopts 'h' OPT
 do
   case "${OPT}" in
-    h) usage && exit 0 ;;
-    *) usage 2>&1 && exit 1 ;;
+    h|[?]) usage && exit 0 ;;
   esac
 
   # We have to remove found options from the input for later evaluations of
   # passed arguments in subscripts that are not interested in these options.
   shift $(( $OPTIND - 1 ))
 done
+
+# Remove possibly passed end of options marker.
+if [ "${1}" = "--" ]
+then
+  shift $(( $OPTIND - 1 ))
+fi
 
 # For more information on shell colors and other text formatting see:
 # http://stackoverflow.com/a/4332530/1251219
@@ -93,22 +98,22 @@ download_and_extract()
   fi
 
   # We don't know which version these files have, delete and retrieve again.
-  rm -rf -- "${2}"
+  rm --force --recursive -- "${2}"
 
   # Build archive name.
   local ARCHIVE_NAME="${2}-${3}.tar.gz"
 
   # Delete possibly left over archive.
-  rm -f -- "${ARCHIVE_NAME}"
+  rm --force -- "${ARCHIVE_NAME}"
 
   # Download, extract, delete archive, simplify directory name by creating
   # a symbolic link and make sure files belong to root user.
   wget "${1}${ARCHIVE_NAME}"
-  tar fvxz "${ARCHIVE_NAME}"
-  rm -f -- "${ARCHIVE_NAME}"
-  ln -s -- "${2}-${3}" "${2}"
+  tar --extract --file="${ARCHIVE_NAME}"
+  rm --force -- "${ARCHIVE_NAME}"
+  ln --symoblic -- "${2}-${3}" "${2}"
   chown -- root:root "${SOURCE_DIRECTORY}/${2}"
-  chown -R -- root:root "${SOURCE_DIRECTORY}/${2}"
+  chown --recursive -- root:root "${SOURCE_DIRECTORY}/${2}"
 }
 
 # Create directory and set nginx owner.
@@ -117,7 +122,7 @@ download_and_extract()
 #   $1 - Absolute path to the directory.
 create_directory()
 {
-  mkdir -p -- "${1}"
+  mkdir --parents -- "${1}"
   chmod -- 0755 "${1}"
   chown -- "${USER}":"${GROUP}" "${1}"
 }
@@ -125,7 +130,7 @@ create_directory()
 # Check return status of every command.
 set -e
 
-printf 'Installing nginx %s ...\n' "${YELLOW}${NGINX_VERSION}${NORMAL}"
+printf -- 'Installing nginx %s ...\n' "${YELLOW}${NGINX_VERSION}${NORMAL}"
 
 # Make sure we operate from the correct directory.
 cd -- "${SOURCE_DIRECTORY}"
@@ -140,14 +145,14 @@ case "${TLS_LIBRARY_NAME}" in
   ;;
 
   boringssl)
-    if [ -d 'boringssl' ]
-    then
-      cd -- boringssl
-      git pull
-      cd -- ..
-    else
-      git clone 'https://boringssl.googlesource.com/boringssl'
-    fi
+#     if [ -d 'boringssl' ]
+#     then
+#      cd -- boringssl
+#      git pull
+#      cd -- ..
+#    else
+#      git clone 'https://boringssl.googlesource.com/boringssl'
+#    fi
     printf '%sTODO:%s boringssl' "${YELLOW}" "${NORMAL}" >&2
     exit 1
   ;;
@@ -237,7 +242,7 @@ create_directory /var/nginx/fastcgi
 if [ ! -f /etc/init.d/nginx ]
 then
   # Download SysVinit compliant script and ensure correct permissions and owner.
-  wget -O /etc/init.d/nginx 'https://raw.githubusercontent.com/Fleshgrinder/nginx-sysvinit-script/master/nginx'
+  wget --output-document=/etc/init.d/nginx 'https://raw.githubusercontent.com/Fleshgrinder/nginx-sysvinit-script/master/nginx'
   chmod -- 0775 /etc/init.d/nginx
   chown -- root:root /etc/init.d/nginx
 
