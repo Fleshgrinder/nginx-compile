@@ -81,7 +81,7 @@ readonly YELLOW=$(tput bold; tput setaf 3)
 readonly NORMAL=$(tput sgr0)
 
 # Include user configurable configuration.
-. "$(cd -- $(dirname -- ${0}); pwd)/config.sh"
+. "$(cd -- "$(dirname -- "${0}")"; pwd)"/config.sh
 
 # Download and extract given compressed tar archive.
 #
