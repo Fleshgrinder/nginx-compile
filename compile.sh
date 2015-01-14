@@ -86,19 +86,6 @@ readonly NORMAL=$(tput sgr0)
 # Install dependencies.
 apt-get --yes -- install build-essential git
 
-# Used to collect additional modules that should be compiled in, defaults to an
-# empty string.
-ADD_MODULES=''
-
-# Add a module to the configure call.
-#
-# ARGS:
-#   $1 - The name of the directory within the source directory.
-add_module()
-{
-  ADD_MODULES="${ADD_MODULES}--add-module=${SOURCE_DIRECTORY}/${1} "
-}
-
 # Download and extract given compressed tar archive.
 #
 # ARGS:
@@ -195,41 +182,35 @@ else
   git clone 'https://github.com/madler/zlib.git'
 fi
 
-if [ $ACCEPT_LANGUAGE = true ]
+if [ -d nginx_accept_language_module ]
 then
-  if [ -d nginx_accept_language_module ]
-  then
-    cd -- nginx_accept_language_module
-    git pull
-    cd -- ..
-  else
-    git clone 'https://github.com/Fleshgrinder/nginx_accept_language_module.git'
-  fi
-  add_module nginx_accept_language_module
+  cd -- nginx_accept_language_module
+  git pull
+  cd -- ..
+else
+  git clone 'https://github.com/Fleshgrinder/nginx_accept_language_module.git'
 fi
 
-if [ $GOOGLE_PAGESPEED = true ]
+if [ -d ngx_pagespeed ]
 then
-  if [ -d ngx_pagespeed ]
-  then
-    cd -- ngx_pagespeed
-    git pull
-    cd -- ..
-  else
-    git clone 'https://github.com/pagespeed/ngx_pagespeed.git'
-    cd -- ngx_pagespeed
-    wget -- "https://dl.google.com/dl/page-speed/psol/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
-    tar --extract --file="${SOURCE_DIRECTORY}/ngx_pagespeed/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
-    rm --force -- "${SOURCE_DIRECTORY}/ngx_pagespeed/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
-    cd -- ..
-    chown --recursive -- root:root "${SOURCE_DIRECTORY}/ngx_pagespeed/psol"
-  fi
-  add_module ngx_pagespeed
+  cd -- ngx_pagespeed
+  git pull
+  cd -- ..
+else
+  git clone 'https://github.com/pagespeed/ngx_pagespeed.git'
+  cd -- ngx_pagespeed
+  wget -- "https://dl.google.com/dl/page-speed/psol/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+  tar --extract --file="${SOURCE_DIRECTORY}/ngx_pagespeed/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+  rm --force -- "${SOURCE_DIRECTORY}/ngx_pagespeed/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+  cd -- ..
+  chown --recursive -- root:root "${SOURCE_DIRECTORY}/ngx_pagespeed/psol"
+  chmod --recursive -- 0755 "${SOURCE_DIRECTORY}/ngx_pagespeed/psol"
+  find "${SOURCE_DIRECTORY}/ngx_pagespeed/psol" -type f -exec chmod 644 {} \;
 fi
 
 # Configure, compile, and install nginx.
 cd -- "${SOURCE_DIRECTORY}/nginx"
-CFLAGS='-O3 -m64 -march=native -ffunction-sections -fdata-sections -D FD_SETSIZE=131072' \
+CFLAGS='-O3 -pipe -m64 -march=native -mtune=native -fdata-sections -ffunction-sections -fexceptions -fstack-protector --param=ssp-buffer-size=4 -Wp,-D_FORTIFY_SOURCE=2 -DFD_SETSIZE=131072' \
 CXXFLAGS="${CFLAGS}" \
 CPPFLAGS="${CFLAGS}" \
 LDFLAGS='-Wl,--gc-sections' \
@@ -261,7 +242,8 @@ LDFLAGS='-Wl,--gc-sections' \
   --with-pcre="${SOURCE_DIRECTORY}/pcre" \
   --with-pcre-jit \
   --with-zlib="${SOURCE_DIRECTORY}/zlib" \
-  "${ADD_MODULES}" \
+  --add-module="${SOURCE_DIRECTORY}/nginx_accept_language_module" \
+  --add-module="${SOURCE_DIRECTORY}/ngx_pagespeed" \
   --without-http_access_module \
   --without-http_auth_basic_module \
   --without-http_autoindex_module \
