@@ -83,6 +83,19 @@ readonly NORMAL=$(tput sgr0)
 # Include user configurable configuration.
 . "$(cd -- "$(dirname -- "${0}")"; pwd)"/config.sh
 
+# Used to collect additional modules that should be compiled in, defaults to an
+# empty string.
+ADD_MODULES=''
+
+# Add a module to the configure call.
+#
+# ARGS:
+#   $1 - The name of the directory within the source directory.
+add_module()
+{
+  ADD_MODULES="${ADD_MODULES}--add-module=${SOURCE_DIRECTORY}/${1} "
+}
+
 # Download and extract given compressed tar archive.
 #
 # ARGS:
@@ -179,6 +192,19 @@ else
   git clone 'https://github.com/madler/zlib.git'
 fi
 
+if [ $GOOGLE_PAGESPEED = true ]
+then
+  if [ -d ngx_pagespeed ]
+  then
+    cd -- ngx_pagespeed
+    git pull
+    cd -- ..
+  else
+    git clone 'https://github.com/pagespeed/ngx_pagespeed.git'
+  fi
+  add_module ngx_pagespeed
+fi
+
 # Configure, compile, and install nginx.
 cd -- "${SOURCE_DIRECTORY}/nginx"
 CFLAGS='-O3 -m64 -march=native -ffunction-sections -fdata-sections -D FD_SETSIZE=131072' \
@@ -213,6 +239,7 @@ LDFLAGS='-Wl,--gc-sections' \
   --with-pcre="${SOURCE_DIRECTORY}/pcre" \
   --with-pcre-jit \
   --with-zlib="${SOURCE_DIRECTORY}/zlib" \
+  "${ADD_MODULES}" \
   --without-http_access_module \
   --without-http_auth_basic_module \
   --without-http_autoindex_module \
