@@ -197,7 +197,7 @@ fi
 
 if [ $ACCEPT_LANGUAGE = true ]
 then
-  if [ -d ]
+  if [ -d nginx_accept_language_module ]
   then
     cd -- nginx_accept_language_module
     git pull
