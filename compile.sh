@@ -219,9 +219,10 @@ then
     git clone 'https://github.com/pagespeed/ngx_pagespeed.git'
     cd -- ngx_pagespeed
     wget -- "https://dl.google.com/dl/page-speed/psol/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
-    tar --extract --file="${GOOGLE_PAGESPEED_VERSION}.tar.gz"
-    rm --force -- "${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+    tar --extract --file="${SOURCE_DIRECTORY}/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+    rm --force -- "${SOURCE_DIRECTORY}/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
     cd -- ..
+    chown --recursive -- root:root "${SOURCE_DIRECTORY}/ngx_pagespeed/psol"
   fi
   add_module ngx_pagespeed
 fi
