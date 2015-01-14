@@ -83,6 +83,9 @@ readonly NORMAL=$(tput sgr0)
 # Include user configurable configuration.
 . "$(cd -- "$(dirname -- "${0}")"; pwd)"/config.sh
 
+# Install dependencies.
+apt-get --yes -- install build-essential git
+
 # Used to collect additional modules that should be compiled in, defaults to an
 # empty string.
 ADD_MODULES=''
@@ -190,6 +193,19 @@ then
   cd -- ..
 else
   git clone 'https://github.com/madler/zlib.git'
+fi
+
+if [ $ACCEPT_LANGUAGE = true ]
+then
+  if [ -d ]
+  then
+    cd -- nginx_accept_language_module
+    git pull
+    cd -- ..
+  else
+    git clone 'https://github.com/Fleshgrinder/nginx_accept_language_module.git'
+  fi
+  add_module nginx_accept_language_module
 fi
 
 if [ $GOOGLE_PAGESPEED = true ]
