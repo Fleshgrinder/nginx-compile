@@ -15,14 +15,14 @@ sh nginx-compile/compile.sh
 You may want to change the configure options for nginx in `compile.sh` to meet
 your needs.
 
-## License
-> This is free and unencumbered software released into the public domain.
->
-> For more information, please refer to <http://unlicense.org>
-
 ## Weblinks
 Other repositories of interest:
 
 - [nginx-configuration](https://github.com/Fleshgrinder/nginx-configuration)
 - [nginx-session-ticket-key-rotation](https://github.com/Fleshgrinder/nginx-session-ticket-key-rotation)
 - [nginx-sysvinit-script](https://github.com/Fleshgrinder/nginx-sysvinit-script)
+
+## License
+> This is free and unencumbered software released into the public domain.
+>
+> For more information, please refer to <http://unlicense.org>
