@@ -124,7 +124,7 @@ download_and_extract()
 
   # Download, extract, delete archive, simplify directory name by creating
   # a symbolic link and make sure files belong to root user.
-  wget "${1}${ARCHIVE_NAME}"
+  wget -- "${1}${ARCHIVE_NAME}"
   tar --extract --file="${ARCHIVE_NAME}"
   rm --force -- "${ARCHIVE_NAME}"
   ln --symbolic -- "${2}-${3}" "${2}"
@@ -217,6 +217,11 @@ then
     cd -- ..
   else
     git clone 'https://github.com/pagespeed/ngx_pagespeed.git'
+    cd -- ngx_pagespeed
+    wget -- "https://dl.google.com/dl/page-speed/psol/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+    tar --extract --file="${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+    rm --force -- "${GOOGLE_PAGESPEED_VERSION}.tar.gz"
+    cd -- ..
   fi
   add_module ngx_pagespeed
 fi
