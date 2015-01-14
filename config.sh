@@ -50,6 +50,12 @@ readonly TLS_LIBRARY_NAME="${1:-openssl}"
 # The version string of the SSL/TLS library release that should be installed.
 readonly TLS_LIBRARY_VERSION='1.0.1k'
 
+# Determines if the Accept-Language module should be compiled or not.
+readonly ACCEPT_LANGUAGE=true
+
+# Determines if the Google PageSpeed module should be compiled or not.
+readonly GOOGLE_PAGESPEED=true
+
 # The version string of the Google PageSpeed library.
 readonly GOOGLE_PAGESPEED_VERSION='1.9.32.3'
 
