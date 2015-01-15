@@ -37,14 +37,15 @@
 # ------------------------------------------------------------------------------
 
 # The version string of the nginx release that should be installed.
-readonly NGINX_VERSION='1.7.9'
+# Defaults to `false` and the code is cloned from my personal repository.
+readonly NGINX_VERSION=false
 
 # The version string of the PCRE release that should be installed.
 readonly PCRE_VERSION='8.36'
 
 # The name of the SSL/TLS library nginx should be compiled against.
 #
-# Possible values: openssl (default), boringssl. libressl
+# Possible values: `openssl` (default), `boringssl`, `libressl`
 readonly TLS_LIBRARY_NAME="${1:-openssl}"
 
 # The version string of the SSL/TLS library release that should be installed.

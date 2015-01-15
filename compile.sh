@@ -98,6 +98,35 @@ add_module()
   ADD_MODULES="${ADD_MODULES}--add-module=${SOURCE_DIRECTORY}/${1} "
 }
 
+# Create directory and set nginx owner.
+#
+# ARGS:
+#   $1 - Absolute path to the directory.
+create_directory()
+{
+  mkdir --parents -- "${1}"
+  chmod -- 0755 "${1}"
+  chown -- "${USER}":"${GROUP}" "${1}"
+}
+
+# Clone git repository (or pull changes if it already exists).
+#
+# ARGS:
+#   $1 - User name
+#   $2 - Repository name
+git_clone()
+{
+  if [ -d "${SOURCE_DIRECTORY}/${2}/.git" ]
+  then
+    cd -- "${SOURCE_DIRECTORY}/${2}"
+    git pull
+    cd -- "${SOURCE_DIRECTORY}"
+  else
+    rm --recursive --force -- "${SOURCE_DIRECTORY}/${1}"
+    git clone "https://github.com/${1}/${2}.git"
+  fi
+}
+
 # Download and extract given compressed tar archive.
 #
 # ARGS:
@@ -131,17 +160,6 @@ download_and_extract()
   chown --recursive -- root:root "${SOURCE_DIRECTORY}/${2}"
 }
 
-# Create directory and set nginx owner.
-#
-# ARGS:
-#   $1 - Absolute path to the directory.
-create_directory()
-{
-  mkdir --parents -- "${1}"
-  chmod -- 0755 "${1}"
-  chown -- "${USER}":"${GROUP}" "${1}"
-}
-
 # Check return status of every command.
 set -e
 
@@ -150,8 +168,13 @@ printf -- 'Installing nginx %s ...\n' "${YELLOW}${NGINX_VERSION}${NORMAL}"
 # Make sure we operate from the correct directory.
 cd -- "${SOURCE_DIRECTORY}"
 
-# Download necessary sources.
-download_and_extract 'http://nginx.org/download/' 'nginx' "${NGINX_VERSION}"
+if [ $NGINX_VERSION = false ]
+then
+  git_clone Fleshgrinder nginx
+else
+  download_and_extract 'http://nginx.org/download/' 'nginx' "${NGINX_VERSION}"
+fi
+
 download_and_extract 'ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/' 'pcre' "${PCRE_VERSION}"
 
 case "${TLS_LIBRARY_NAME}" in
@@ -187,39 +210,28 @@ esac
 # Ensure zlib is up to date.
 if [ -d zlib ]
 then
-  cd -- zlib
+  cd -- "${SOURCE_DIRECTORY}/zlib"
   git pull
-  cd -- ..
+  cd -- "${SOURCE_DIRECTORY}"
 else
   git clone 'https://github.com/madler/zlib.git'
 fi
 
 if [ ${ACCEPT_LANGUAGE} = true ]
 then
-  if [ -d nginx_accept_language_module ]
-  then
-    cd -- nginx_accept_language_module
-    git pull
-    cd -- ..
-  else
-    git clone 'https://github.com/Fleshgrinder/nginx_accept_language_module.git'
-  fi
+  git_clone Fleshgrinder nginx_accept_language_module
 fi
 
 if [ ${GOOGLE_PAGESPEED} = true ]
 then
-  if [ -d ngx_pagespeed ]
+  git_clone pagespeed ngx_pagespeed
+  if [ !-d "${SOURCE_DIRECTORY}/ngx_pagespeed/psol" ]
   then
-    cd -- ngx_pagespeed
-    git pull
-    cd -- ..
-  else
-    git clone 'https://github.com/pagespeed/ngx_pagespeed.git'
-    cd -- ngx_pagespeed
+    cd -- "${SOURCE_DIRECTORY}/ngx_pagespeed"
     wget -- "https://dl.google.com/dl/page-speed/psol/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
     tar --extract --file="${SOURCE_DIRECTORY}/ngx_pagespeed/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
     rm --force -- "${SOURCE_DIRECTORY}/ngx_pagespeed/${GOOGLE_PAGESPEED_VERSION}.tar.gz"
-    cd -- ..
+    cd -- "${SOURCE_DIRECTORY}"
     chown --recursive -- root:root "${SOURCE_DIRECTORY}/ngx_pagespeed/psol"
     chmod --recursive -- 0755 "${SOURCE_DIRECTORY}/ngx_pagespeed/psol"
     find "${SOURCE_DIRECTORY}/ngx_pagespeed/psol" -type f -exec chmod 644 {} \;
