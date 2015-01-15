@@ -240,10 +240,10 @@ fi
 
 # Configure, compile, and install nginx.
 cd -- "${SOURCE_DIRECTORY}/nginx"
-CFLAGS='-O3 -pipe -m64 -march=native -mtune=native -fdata-sections -ffunction-sections -fexceptions -fstack-protector --param=ssp-buffer-size=4 -Wp,-D_FORTIFY_SOURCE=2 -DFD_SETSIZE=131072' \
+CFLAGS='-O2 -m64 -march=native -pipe -DFD_SETSIZE=131072' \
 CXXFLAGS="${CFLAGS}" \
 CPPFLAGS="${CFLAGS}" \
-LDFLAGS='-Wl,--gc-sections' \
+LDFLAGS='' \
 ./configure \
   --user="${USER}" \
   --group="${GROUP}" \
