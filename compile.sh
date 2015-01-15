@@ -288,8 +288,6 @@ LDFLAGS='-Wl,--gc-sections' \
   --without-http_userid_module \
   --without-http_uwsgi_module
 make
-make install
-make clean
 
 # Create the directories for temporary data.
 create_directory /var/nginx/uploads
@@ -309,7 +307,10 @@ fi
 set -e
 service nginx stop 2>/dev/null
 set +e
+
+make install
 service nginx start
+make clean
 
 printf '[%sok%s] Installation finished.\n' "${GREEN}" "${NORMAL}"
 exit 0
