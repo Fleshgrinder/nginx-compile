@@ -1,19 +1,25 @@
 # nginx compile
-Shell script collection for compiling latest [nginx](http://nginx.org/) from
-source. With my personal compile options, feel free to fork this repository and
-alter it to your needs. If you can help me to improve (e.g. better performance
-with some flags) my scripts please open an issue or create a pull request.
+Shell script for compiling latest [nginx](http://nginx.org) from source.
 
-## Installation
-Check the `config.sh` file for configuration options.
-
+## Usage
 ```
+cd /usr/local/src
 git clone https://github.com/Fleshgrinder/nginx-compile.git
 sh nginx-compile/compile.sh
 ```
 
-You may want to change the configure options for nginx in `compile.sh` to meet
-your needs.
+## Features
+The following features and modules are part of the resulting nginx build:
+
+* IPv6 support
+* [GZip static module](http://nginx.org/en/docs/http/ngx_http_gzip_static_module.html)
+* [SSL module](http://nginx.org/en/docs/http/ngx_http_ssl_module.html)
+* [SPDY module](http://nginx.org/en/docs/http/ngx_http_spdy_module.html)
+* Custom OpenSSL with `enable-ec_nistp_64_gcc_128` option and heartbeat disabled.
+* Latest PCRE with JIT.
+* [HTTP Accept-Language module](https://github.com/Fleshgrinder/nginx_accept_language_module)
+* [Google PageSpeed module](https://github.com/pagespeed/ngx_pagespeed)
+* [LSB compliant SysVinit script](https://github.com/Fleshgrinder/nginx-sysvinit-script)
 
 ## Weblinks
 Other repositories of interest:
