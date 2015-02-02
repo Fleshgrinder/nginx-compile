@@ -21,6 +21,10 @@ The following features and modules are part of the resulting nginx build:
 * [Google PageSpeed module](https://github.com/pagespeed/ngx_pagespeed)
 * [LSB compliant SysVinit script](https://github.com/Fleshgrinder/nginx-sysvinit-script)
 
+## TODO
+
+* On the fly upgrade, see [nginx wiki](http://wiki.nginx.org/NginxCommandLine#Stopping_or_Restarting_Nginx).
+
 ## Weblinks
 Other repositories of interest:
 
