@@ -35,10 +35,6 @@ The following features and modules are part of the resulting nginx build:
   instance, a C program with a JSON configuration file and more command line
   options. Or perhaps something with node.js?
 
-## TODO
-
-* On the fly upgrade, see [nginx wiki](http://wiki.nginx.org/NginxCommandLine#Stopping_or_Restarting_Nginx).
-
 ## Weblinks
 Other repositories of interest:
 
