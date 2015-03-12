@@ -493,6 +493,8 @@ EOT
             then service nginx start || die 'Could not start nginx.' ${EC_MAKE_FAIL}
         fi
     fi
+else
+    make install || die 'Could not install nginx.' ${EC_MAKE_FAIL}
 fi
 
 
