@@ -362,8 +362,8 @@ cd -- "${SOURCE_DIRECTORY}/nginx"
     --pid-path="${NGINX_PID_PATH}" \
     --lock-path="${NGINX_LOCK_PATH}" \
     --error-log-path="${NGINX_LOG_PATH}/error.log" \
-    --http-client-body-temp-path="${NGINX_HTTP_CLIENT_BODY_TEMP_PATH}" \
-    --http-fastcgi-temp-path="${NGINX_HTTP_FASTCGI_TEMP_PATH}" \
+    --http-client-body-temp-path="${NGINX_TMP_PATH}/nginx_client_body" \
+    --http-fastcgi-temp-path="${NGINX_TMP_PATH}/nginx_fastcgi" \
     --http-log-path="${NGINX_LOG_PATH}/access.log" \
     --with-cc-opt="${NGINX_CLFAGS}" \
     --with-ld-opt="${NGINX_LDFLAGS}" \
@@ -404,10 +404,6 @@ make || die 'Could not compile nginx.' ${EC_MAKE_FAIL}
 # Restore existing nginx configuration.
 [ -d /etc/nginx ] && mv /etc/nginx /etc/nginx/dist
 [ -d /etc/.nginx ] && mv /etc/.nginx /etc/nginx
-
-# Create the directories for temporary data.
-create_directory "${NGINX_HTTP_CLIENT_BODY_TEMP_PATH}" || die 'Could not create HTTP client body temp path directory.' ${EC_MKDIR_FAIL}
-create_directory "${NGINX_HTTP_FASTCGI_TEMP_PATH}" || die 'Could not create HTTP FastCGI temp path directory.' ${EC_MKDIR_FAIL}
 
 
 # ------------------------------------------------------------------------------

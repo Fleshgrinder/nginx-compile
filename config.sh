@@ -80,12 +80,6 @@ readonly GROUP="${USER}"
 # ------------------------------------------------------------------------------
 
 
-# SEE: http://nginx.org/en/docs/http/ngx_http_core_module.html#client_body_temp_path
-readonly NGINX_HTTP_CLIENT_BODY_TEMP_PATH='/run/nginx/uploads'
-
-# SEE: http://nginx.org/en/docs/http/ngx_http_fastcgi_module.html#fastcgi_temp_path
-readonly NGINX_HTTP_FASTCGI_TEMP_PATH='/run/nginx/fastcgi'
-
 # Whether to install the SysVinit script or not.
 readonly NGINX_INITD=true
 
@@ -95,8 +89,9 @@ readonly NGINX_PREFIX='/usr/local'
 readonly NGINX_SBIN_PATH="${NGINX_PREFIX}/sbin"
 readonly NGINX_CONF_PATH='/etc/nginx'
 readonly NGINX_PID_PATH='/run/nginx.pid'
-readonly NGINX_LOCK_PATH='/run/lock/nginx'
+readonly NGINX_LOCK_PATH='/run/nginx.lock'
 readonly NGINX_LOG_PATH='/var/log/nginx'
+readonly NGINX_TMP_PATH='/tmp'
 
 # Additional flags that should be passed to the C compiler.
 NGINX_CLFAGS="-O2 -march=native -pipe -DFD_SETSIZE=131072"
