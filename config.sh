@@ -57,7 +57,7 @@ readonly PCRE_VERSION='8.36'
 readonly TLS_LIBRARY_NAME="${1:-openssl}"
 
 # The version string of the SSL/TLS library release that should be installed.
-readonly TLS_LIBRARY_VERSION='1.0.2'
+readonly TLS_LIBRARY_VERSION='1.0.2a'
 
 # Determines if the Accept-Language module should be compiled or not.
 readonly ACCEPT_LANGUAGE=true
