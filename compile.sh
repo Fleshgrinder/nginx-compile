@@ -380,6 +380,7 @@ cd -- "${SOURCE_DIRECTORY}/nginx"
     --with-sha1-asm \
     --with-pcre="${SOURCE_DIRECTORY}/pcre" \
     --with-pcre-jit \
+    --with-threads \
     --with-zlib="${SOURCE_DIRECTORY}/zlib" \
     ${ADD_MODULES} \
     --without-http_access_module \
