@@ -57,7 +57,6 @@ readonly EC_DL_PSOL_FAIL=76
 readonly EC_CONFIGURE_FAIL=77
 readonly EC_MAKE_FAIL=78
 readonly EC_MKDIR_FAIL=79
-readonly EC_DL_INITD_FAIL=80
 
 
 # ------------------------------------------------------------------------------
@@ -415,14 +414,13 @@ make || die 'Could not compile nginx.' ${EC_MAKE_FAIL}
 # Install SysVinit script if applicable.
 if [ ${NGINX_INITD} = true ] && [ ! -f "${INITD_PATH}" ]
 then
-    # Download SysVinit compliant script and ensure correct permissions and owner.
-    wget --output-document="${INITD_PATH}" 'https://raw.githubusercontent.com/Fleshgrinder/nginx-sysvinit-script/master/nginx' \
-        || die 'Could not download SysVinit script.' ${EC_DL_INITD_FAIL}
-    chmod -- 0775 "${INITD_PATH}" || exit ${EC_SYSTEM_CALL_FAILED}
-    chown -- root:root "${INITD_PATH}" || exit ${EC_SYSTEM_CALL_FAILED}
-
-    # Ensure nginx is started upon system startup.
-    update-rc.d nginx defaults || exit ${EC_SYSTEM_CALL_FAILED}
+    cd "${SOURCE_DIRECTORY}"
+    if [ -d nginx-sysvinit-script ]
+        then git -C nginx-sysvinit-script pull
+        else git clone https://github.com/Fleshgrinder/nginx-sysvinit-script.git
+    fi
+    cd nginx-sysvinit-script
+    make
 fi
 
 # Check if an nginx is already installed.
