@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# ------------------------------------------------------------------------------
+# Stop old nginx instance and use the new one.
+#
+# @author Richard Fussenegger <fleshgrinder@users.noreply.github.com>
+# @copyright 2013-15 Richard Fussenegger
+# @license http://unlicense.org/ PD
+# ------------------------------------------------------------------------------
+
+# Load the configuration.
+. "$(cd -- "$(dirname -- "${0}")"; pwd)/config.sh"
+
+# Find PIDs of old and new nginx.
+readonly NGINX_OLD_PID_PATH="${NGINX_PID_PATH}.oldbin"
+readonly NGINX_NEW_PID=$(cat "${NGINX_PID_PATH}")
+readonly NGINX_OLD_PID=$(cat "${NGINX_OLD_PID_PATH}")
+
+# Ask the old nginx to quit.
+kill -28 "${NGINX_OLD_PID}" || exit 64
+
+# Give it some time to shut down.
+sleep 1
+
+# Ask it to quit.
+kill -3 "${NGINX_OLD_PID}" || exit 65
+
+# Give it some time to quit.
+sleep 0.1
+
+# Remove the old binary.
+rm "${NGINX_SBIN_PATH}/nginx.oldbin"
+
+exit 0

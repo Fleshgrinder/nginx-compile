@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# ------------------------------------------------------------------------------
+# Rollback to old nginx instance.
+#
+# @author Richard Fussenegger <fleshgrinder@users.noreply.github.com>
+# @copyright 2013-15 Richard Fussenegger
+# @license http://unlicense.org/ PD
+# ------------------------------------------------------------------------------
+
+# Load the configuration.
+. "$(cd -- "$(dirname -- "${0}")"; pwd)/config.sh"
+
+cat >&2 << EOT
+Not implemented, please refer to the official documentation:
+${YELLOW}http://nginx.org/en/docs/control.html#upgrade${NORMAL}
+
+I simply did not need this feature as of yet and I implement stuff as I need it.
+EOT
