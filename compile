@@ -346,7 +346,7 @@ cd -- "${SOURCE_DIRECTORY}/nginx"
     --with-ipv6 \
     --with-http_gzip_static_module \
     --with-http_ssl_module \
-    --with-http_spdy_module \
+    --with-http_v2_module \
     --with-openssl-opt="${TLS_LIBRARY_OPTIONS}" \
     --with-openssl="${SOURCE_DIRECTORY}/${TLS_LIBRARY_NAME}" \
     --with-md5="${SOURCE_DIRECTORY}/${TLS_LIBRARY_NAME}" \
