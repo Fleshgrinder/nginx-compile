@@ -18,5 +18,5 @@ trim_trailing_whitespace    = true
 [*.md]
 trim_trailing_whitespace    = false
 
-[{M,m}akefile]
+[{config.sh,{M,m}akefile}]
 indent_style                = tab

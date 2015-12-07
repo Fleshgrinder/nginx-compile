@@ -44,6 +44,9 @@ readonly __FILENAME__="${0##*/}"
 # Directory where this script resides (not necessarily the same as CWD).
 readonly __DIRNAME__="$(cd -- "$(dirname -- "${0}")"; pwd)"
 
+# Used to speed-up compilation time.
+CPU_COUNT="$(grep -c ^processor /proc/cpuinfo)"
+
 # Used to collect additional modules that should be added to nginx.
 ADD_MODULES=''
 
@@ -347,7 +350,7 @@ cd -- "${SOURCE_DIRECTORY}/nginx"
     --with-http_gzip_static_module \
     --with-http_ssl_module \
     --with-http_v2_module \
-    --with-openssl-opt="${TLS_LIBRARY_OPTIONS}" \
+    --with-openssl-opt="'"${TLS_LIBRARY_OPTIONS}"'" \
     --with-openssl="${SOURCE_DIRECTORY}/${TLS_LIBRARY_NAME}" \
     --with-md5="${SOURCE_DIRECTORY}/${TLS_LIBRARY_NAME}" \
     --with-md5-asm \
@@ -375,7 +378,7 @@ cd -- "${SOURCE_DIRECTORY}/nginx"
     || die 'Could not configure nginx.' ${EC_CONFIGURE_FAIL}
 
 # Compile configured nginx.
-make || die 'Could not compile nginx.' ${EC_MAKE_FAIL}
+make -j ${CPU_COUNT} || die 'Could not compile nginx.' ${EC_MAKE_FAIL}
 
 # Restore existing nginx configuration.
 [ -d "${NGINX_CONF_PATH}" ] && mv "${NGINX_CONF_PATH}" "${NGINX_CONF_PATH}/dist"
@@ -420,7 +423,7 @@ then
         OLDBIN="${OLDBIN}.oldbin"
 
         # Now we can install the new nginx.
-        make install || die 'Could not install nginx.' ${EC_MAKE_FAIL}
+        make -j ${CPU_COUNT} install || die 'Could not install nginx.' ${EC_MAKE_FAIL}
 
         # Retrieve the actual PID of the old binary.
         readonly OLDBIN_PID=$(cat "${NGINX_PID_PATH}")
@@ -465,7 +468,7 @@ EOT
         fi
     fi
 else
-    make install || die 'Could not install nginx.' ${EC_MAKE_FAIL}
+    make -j ${CPU_COUNT} install || die 'Could not install nginx.' ${EC_MAKE_FAIL}
 fi
 
 

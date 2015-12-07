@@ -75,10 +75,116 @@ NGINX_CLFAGS="-O2 -march=native -pipe -DFD_SETSIZE=131072"
 [ $(uname -m) = 'x86_x64' ] && CFLAGS="${CFLAGS} -m64"
 
 # Additional flags that should be passed to the linker.
-NGINX_LDFLAGS=
+NGINX_LDFLAGS='-lrt'
 
 # Options to pass to the TLS library.
-readonly TLS_LIBRARY_OPTIONS='-DOPENSSL_NO_HEARTBEATS enable-ec_nistp_64_gcc_128 no-rc2 no-rc4 no-rc5 no-md2 no-md4 no-ssl2 no-ssl3 no-krb5 no-hw no-engines'
+#
+# All possible options that I could find and that are not included below:
+#   no-aes
+#   no-algorithms
+#   no-asm
+#   no-bf
+#   no-bio
+#   no-buffer
+#   no-buf-freelists
+#   no-chain-verify
+#   no-dh
+#   no-ec-nistp-64-gcc-128
+#   no-ecdh
+#   no-ecdsa
+#   no-fp-api
+#   no-gmp
+#   no-hmac
+#   no-inline-asm
+#   no-lhash
+#   no-locking
+#   no-md5
+#   no-multibyte
+#   no-nextprotoneg
+#   no-object
+#   no-ocsp
+#   no-posix-io
+#   no-psk
+#   no-rdrand
+#   no-rfc3779
+#   no-rsa
+#   no-rsax
+#   no-setvbuf-ionbf
+#   no-sha
+#   no-sha1
+#   no-sha256
+#   no-sha512
+#   no-sock
+#   no-stack
+#   no-stdio
+#   no-tls
+#   no-tls1
+#   no-tls1-2-client
+#   no-tlsext
+#   no-x509
+#   no-x509-verify
+read -r -d '' TLS_LIBRARY_OPTIONS <<- 'TLS_LIBRARY_OPTIONS'
+	enable-ec_nistp_64_gcc_128
+	no-camellia
+	no-capieng
+	no-cast
+	no-cms
+	no-comp
+	no-decc-init
+	no-deprecated
+	no-des
+	no-descbcm
+	no-dgram
+	no-dsa
+	no-dtls1
+	no-dynamic-engine
+	no-ec
+	no-ec2m
+	no-engine
+	no-err
+	no-evp
+	no-gost
+	no-hash-comp
+	no-heartbeats
+	no-hw
+	no-hw-4758-cca
+	no-hw-aep
+	no-hw-atalla
+	no-hw-chil
+	no-hw-cswift
+	no-hw-ibmca
+	no-hw-ncipher
+	no-hw-nuron
+	no-hw-padlock
+	no-hw-sureware
+	no-hw-ubsec
+	no-hw-zencod
+	no-idea
+	no-jpake
+	no-krb5
+	no-md2
+	no-md4
+	no-mdc2
+	no-rc2
+	no-rc4
+	no-rc5
+	no-ripemd
+	no-ripemd160
+	no-rmd160
+	no-sctp
+	no-seed
+	no-sha0
+	no-speed
+	no-srp
+	no-srtp
+	no-ssl-intern
+	no-ssl2
+	no-ssl3
+	no-static-engine
+	no-store
+	no-whirlpool
+TLS_LIBRARY_OPTIONS
+readonly TLS_LIBRARY_OPTIONS
 
 # The absolute path to the downloaded and extracted source files.
 readonly SOURCE_DIRECTORY='/usr/local/src'
