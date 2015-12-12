@@ -45,7 +45,7 @@ readonly __FILENAME__="${0##*/}"
 readonly __DIRNAME__="$(cd -- "$(dirname -- "${0}")"; pwd)"
 
 # Used to speed-up compilation time.
-CPU_COUNT="$(grep -c ^processor /proc/cpuinfo)"
+readonly CPU_COUNT="$(grep -c ^processor /proc/cpuinfo)"
 
 # Used to collect additional modules that should be added to nginx.
 ADD_MODULES=''
@@ -343,7 +343,7 @@ cd -- "${SOURCE_DIRECTORY}/nginx"
     --http-client-body-temp-path="${NGINX_TMP_PATH}/nginx_client_body" \
     --http-fastcgi-temp-path="${NGINX_TMP_PATH}/nginx_fastcgi" \
     --http-log-path="${NGINX_LOG_PATH}/access.log" \
-    --with-cc-opt="${NGINX_CLFAGS}" \
+    --with-cc-opt="${NGINX_CFLAGS}" \
     --with-ld-opt="${NGINX_LDFLAGS}" \
     --with-file-aio \
     --with-ipv6 \
