@@ -75,7 +75,7 @@ NGINX_CFLAGS="-O2 -march=native -pipe -DFD_SETSIZE=131072"
 [ $(uname -m) = 'x86_x64' ] && NGINX_CFLAGS="${NGINX_CFLAGS} -m64"
 
 # Additional flags that should be passed to the linker.
-NGINX_LDFLAGS='-lrt'
+NGINX_LDFLAGS=
 
 # Options to pass to the TLS library.
 #
