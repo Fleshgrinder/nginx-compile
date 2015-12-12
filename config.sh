@@ -69,7 +69,7 @@ readonly NGINX_LOG_PATH='/var/log/nginx'
 readonly NGINX_TMP_PATH='/tmp'
 
 # Additional flags that should be passed to the C compiler.
-NGINX_CFLAGS="-O2 -march=native -pipe -DFD_SETSIZE=131072"
+NGINX_CFLAGS="-Ofast -march=native -pipe -DFD_SETSIZE=131072"
 
 # Add 64bit option to C compiler flags if applicable.
 [ $(uname -m) = 'x86_x64' ] && NGINX_CFLAGS="${NGINX_CFLAGS} -m64"
