@@ -1,13 +1,5 @@
 #!/bin/sh
 
-# ------------------------------------------------------------------------------
-# Stop old nginx instance and use the new one.
-#
-# @author Richard Fussenegger <fleshgrinder@users.noreply.github.com>
-# @copyright 2013-15 Richard Fussenegger
-# @license http://unlicense.org/ PD
-# ------------------------------------------------------------------------------
-
 # Load the configuration.
 . "$(cd -- "$(dirname -- "${0}")"; pwd)/config.sh"
 
