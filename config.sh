@@ -61,7 +61,7 @@ readonly NGINX_LOG_PATH='/var/log/nginx'
 readonly NGINX_TMP_PATH='/tmp'
 
 # Additional flags that should be passed to the C compiler.
-NGINX_CFLAGS="-Ofast -march=native -pipe -DFD_SETSIZE=131072"
+NGINX_CFLAGS='-Ofast -march=native -pipe -DFD_SETSIZE=131072'
 
 # Add 64bit option to C compiler flags if applicable.
 [ $(uname -m) = 'x86_x64' ] && NGINX_CFLAGS="${NGINX_CFLAGS} -m64"
@@ -115,7 +115,7 @@ NGINX_LDFLAGS=
 #   no-tlsext
 #   no-x509
 #   no-x509-verify
-readonly TLS_LIBRARY_OPTIONS="$(cat <<-EOT
+readonly TLS_LIBRARY_OPTIONS=`cat <<-'EOT'
 	enable-ec_nistp_64_gcc_128
 	no-camellia
 	no-capieng
@@ -175,8 +175,7 @@ readonly TLS_LIBRARY_OPTIONS="$(cat <<-EOT
 	no-static-engine
 	no-store
 	no-whirlpool
-EOT
-)"
+EOT`
 
 # The absolute path to the downloaded and extracted source files.
 readonly SOURCE_DIRECTORY='/usr/local/src'
