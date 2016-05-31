@@ -10,7 +10,7 @@
 readonly NGINX_VERSION=false
 
 # Whether to perform an on-the-fly upgrade or not.
-readonly NGINX_ONTHEFLY_UPGRADE=true
+readonly NGINX_ONTHEFLY_UPGRADE=false
 
 # The version string of the PCRE release that should be installed.
 readonly PCRE_VERSION='8.38'
@@ -26,7 +26,7 @@ readonly TLS_LIBRARY_NAME="${1:-openssl}"
 readonly TLS_LIBRARY_VERSION='1.0.2h'
 
 # Determines if the Accept-Language module should be compiled or not.
-readonly ACCEPT_LANGUAGE=true
+readonly ACCEPT_LANGUAGE=false
 
 # Determines if the Google PageSpeed module should be compiled or not.
 readonly GOOGLE_PAGESPEED=false
