@@ -44,7 +44,7 @@ readonly __FILENAME__="${0##*/}"
 readonly __DIRNAME__="$(cd -- "$(dirname -- "${0}")"; pwd)"
 
 # Used to speed-up compilation time.
-readonly CPU_COUNT="$(lscpu -aeCORE | wc -l)"
+readonly CPU_COUNT=1 #"$(lscpu -aeCORE | wc -l)"
 
 # Used to collect additional modules that should be added to nginx.
 ADD_MODULES=''
@@ -320,7 +320,7 @@ fi
 
 cd -- "${SOURCE_DIRECTORY}/nginx"
 
-[ ! -f configure ] && [ -f auto/configure ] && mv auto/configure configure
+[ ! -f configure ] && [ -f auto/configure ] && cp auto/configure configure
 [ ! -f configure ] && die 'Configure file missing.' ${EX_IOERR}
 
 ./configure \
