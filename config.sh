@@ -115,68 +115,66 @@ NGINX_LDFLAGS=
 #   no-tlsext
 #   no-x509
 #   no-x509-verify
-read -r -d '' TLS_LIBRARY_OPTIONS <<- 'TLS_LIBRARY_OPTIONS'
-	enable-ec_nistp_64_gcc_128
-	no-camellia
-	no-capieng
-	no-cast
-	no-cms
-	no-comp
-	no-decc-init
-	no-deprecated
-	no-des
-	no-descbcm
-	no-dgram
-	no-dsa
-	no-dtls1
-	no-dynamic-engine
-	no-ec
-	no-ec2m
-	no-engine
-	no-err
-	no-evp
-	no-gost
-	no-hash-comp
-	no-heartbeats
-	no-hw
-	no-hw-4758-cca
-	no-hw-aep
-	no-hw-atalla
-	no-hw-chil
-	no-hw-cswift
-	no-hw-ibmca
-	no-hw-ncipher
-	no-hw-nuron
-	no-hw-padlock
-	no-hw-sureware
-	no-hw-ubsec
-	no-hw-zencod
-	no-idea
-	no-jpake
-	no-krb5
-	no-md2
-	no-md4
-	no-mdc2
-	no-rc2
-	no-rc4
-	no-rc5
-	no-ripemd
-	no-ripemd160
-	no-rmd160
-	no-sctp
-	no-seed
-	no-sha0
-	no-speed
-	no-srp
-	no-srtp
-	no-ssl-intern
-	no-ssl2
-	no-ssl3
-	no-static-engine
-	no-store
+readonly TLS_LIBRARY_OPTIONS=\
+	enable-ec_nistp_64_gcc_128 \
+	no-camellia \
+	no-capieng \
+	no-cast \
+	no-cms \
+	no-comp \
+	no-decc-init \
+	no-deprecated \
+	no-des \
+	no-descbcm \
+	no-dgram \
+	no-dsa \
+	no-dtls1 \
+	no-dynamic-engine \
+	no-ec \
+	no-ec2m \
+	no-engine \
+	no-err \
+	no-evp \
+	no-gost \
+	no-hash-comp \
+	no-heartbeats \
+	no-hw \
+	no-hw-4758-cca \
+	no-hw-aep \
+	no-hw-atalla \
+	no-hw-chil \
+	no-hw-cswift \
+	no-hw-ibmca \
+	no-hw-ncipher \
+	no-hw-nuron \
+	no-hw-padlock \
+	no-hw-sureware \
+	no-hw-ubsec \
+	no-hw-zencod \
+	no-idea \
+	no-jpake \
+	no-krb5 \
+	no-md2 \
+	no-md4 \
+	no-mdc2 \
+	no-rc2 \
+	no-rc4 \
+	no-rc5 \
+	no-ripemd \
+	no-ripemd160 \
+	no-rmd160 \
+	no-sctp \
+	no-seed \
+	no-sha0 \
+	no-speed \
+	no-srp \
+	no-srtp \
+	no-ssl-intern \
+	no-ssl2 \
+	no-ssl3 \
+	no-static-engine \
+	no-store \
 	no-whirlpool
-TLS_LIBRARY_OPTIONS
-readonly TLS_LIBRARY_OPTIONS
 
 # The absolute path to the downloaded and extracted source files.
 readonly SOURCE_DIRECTORY='/usr/local/src'
