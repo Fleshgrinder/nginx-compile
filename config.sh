@@ -1,14 +1,6 @@
 #!/bin/sh
 
 # ------------------------------------------------------------------------------
-# Configuration file for nginx-compile scripts.
-#
-# @author Richard Fussenegger <fleshgrinder@users.noreply.github.com>
-# @copyright 2013-15 Richard Fussenegger
-# @license http://unlicense.org/ PD
-# ------------------------------------------------------------------------------
-
-# ------------------------------------------------------------------------------
 #                                                           COMMON CONFIGURATION
 # ------------------------------------------------------------------------------
 
@@ -21,7 +13,7 @@ readonly NGINX_VERSION=false
 readonly NGINX_ONTHEFLY_UPGRADE=true
 
 # The version string of the PCRE release that should be installed.
-readonly PCRE_VERSION='8.37'
+readonly PCRE_VERSION='8.38'
 
 # The name of the SSL/TLS library nginx should be compiled against.
 #
@@ -31,7 +23,7 @@ readonly PCRE_VERSION='8.37'
 readonly TLS_LIBRARY_NAME="${1:-openssl}"
 
 # The version string of the SSL/TLS library release that should be installed.
-readonly TLS_LIBRARY_VERSION='1.0.2e'
+readonly TLS_LIBRARY_VERSION='1.0.2h'
 
 # Determines if the Accept-Language module should be compiled or not.
 readonly ACCEPT_LANGUAGE=true
@@ -40,7 +32,7 @@ readonly ACCEPT_LANGUAGE=true
 readonly GOOGLE_PAGESPEED=false
 
 # The version string of the Google PageSpeed library.
-readonly GOOGLE_PAGESPEED_VERSION='1.9.32.3'
+readonly GOOGLE_PAGESPEED_VERSION='1.11.33.2'
 
 # The name of the user nginx should use.
 readonly USER='www-data'
